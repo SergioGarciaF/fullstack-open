@@ -6,11 +6,11 @@ const Button = ({ handleClick, text }) => {
   );
 };
 
-const Opinions = ({ text, quantity }) => {
+const StatisticsLine = ({ text, value }) => {
   return (
     <>
       {/**Cantidad de opiniones */}
-      <p>{text} {quantity}</p>
+      <p>{text} {value}</p>
     </>
   );
 };
@@ -24,9 +24,9 @@ const Statistics = (props) => {
 
   return (
     <>
-      <Opinions text='good' quantity={props.good} />
-      <Opinions text='neutral' quantity={props.neutral} />
-      <Opinions text='bad' quantity={props.bad} />
+      <StatisticsLine text='good' value={props.good} />
+      <StatisticsLine text='neutral' value={props.neutral} />
+      <StatisticsLine text='bad' value={props.bad} />
       <p>total {props.total}</p>
       <p>average {props.average}</p>
       <p>positive {props.positive}%</p>
