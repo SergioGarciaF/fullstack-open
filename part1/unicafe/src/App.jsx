@@ -15,9 +15,10 @@ const Opinions = ({ text, quantity }) => {
   );
 };
 
-const Statistics = ({average, positive}) => {
+const Statistics = ({total, average, positive}) => {
   return(
     <>
+    <p>total {total}</p>
     <p>average {average}</p>
     <p>positive {positive}%</p>
     </>
@@ -80,8 +81,7 @@ const App = () => {
       <Opinions text='good' quantity={good} />
       <Opinions text='neutral' quantity={neutral} />
       <Opinions text='bad' quantity={bad} />
-      <Opinions text='total' quantity={total} />
-      <Statistics average={average} positive={positive}/>
+      <Statistics total={total} average={average} positive={positive}/>
     </div>
   )
 }
