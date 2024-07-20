@@ -6,40 +6,82 @@ const Button = ({ handleClick, text }) => {
   );
 };
 
-const Statistics = ({ text, quantity }) => {
+const Opinions = ({ text, quantity }) => {
   return (
-    <p>{text} {quantity}</p>
+    <>
+      {/**Cantidad de opiniones */}
+      <p>{text} {quantity}</p>
+    </>
   );
 };
+
+const Statistics = ({average, positive}) => {
+  return(
+    <>
+    <p>average {average}</p>
+    <p>positive {positive}%</p>
+    </>
+  );
+}
 
 const App = () => {
   // guarda los clics de cada botón en su propio estado
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [total, setTotal] = useState(0);
+  const [average, setAverage] = useState(0)
+  const [positive, setPositive] = useState(0);
 
   const handleGood = () => {
-    setGood(good + 1)
+    const newGood = good + 1;
+    const newTotal = total + 1;
+    const newAverage = (newGood - bad) / newTotal;
+    const newPositive = (newGood / newTotal) * 100;
+
+    setGood(newGood);
+    setTotal(newTotal);
+    setAverage(newAverage);
+    setPositive(newPositive);
   }
 
   const handleNeutral = () => {
-    setNeutral(neutral + 1)
+    const newNeutral = neutral + 1;
+    const newTotal = total + 1;
+
+    setNeutral(newNeutral);
+    setTotal(newTotal);
+    setAverage((good - bad) / newTotal);
+    setPositive((good / newTotal) * 100);
   }
 
   const handleBad = () => {
-    setBad(bad + 1)
+    const newBad = bad + 1;
+    const newTotal = total + 1;
+    const newAverage = (good - newBad) / newTotal;
+    const newPositive = (good / newTotal) * 100;
+
+    setBad(newBad);
+    setTotal(newTotal);
+    setAverage(newAverage);
+    setPositive(newPositive);
   }
+  
+
+  
 
   return (
     <div>
       <h1>Give feedback</h1>
-      <Button handleClick={handleGood} text='good'/>
-      <Button handleClick={handleNeutral} text='neutral'/>
-      <Button handleClick={handleBad} text='bad'/>
+      <Button handleClick={handleGood} text='good' />
+      <Button handleClick={handleNeutral} text='neutral' />
+      <Button handleClick={handleBad} text='bad' />
       <h1>Statistics</h1>
-      <Statistics text='good' quantity={good} />
-      <Statistics text='neutral' quantity={neutral} />
-      <Statistics text='bad' quantity={bad} />
+      <Opinions text='good' quantity={good} />
+      <Opinions text='neutral' quantity={neutral} />
+      <Opinions text='bad' quantity={bad} />
+      <Opinions text='total' quantity={total} />
+      <Statistics average={average} positive={positive}/>
     </div>
   )
 }
