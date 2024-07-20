@@ -15,12 +15,21 @@ const Opinions = ({ text, quantity }) => {
   );
 };
 
-const Statistics = ({total, average, positive}) => {
-  return(
+const Statistics = (props) => {
+  if (props.total === 0) {
+    return (
+      <p>No feedback given.</p>
+    );
+  }
+
+  return (
     <>
-    <p>total {total}</p>
-    <p>average {average}</p>
-    <p>positive {positive}%</p>
+      <Opinions text='good' quantity={props.good} />
+      <Opinions text='neutral' quantity={props.neutral} />
+      <Opinions text='bad' quantity={props.bad} />
+      <p>total {props.total}</p>
+      <p>average {props.average}</p>
+      <p>positive {props.positive}%</p>
     </>
   );
 }
@@ -67,9 +76,9 @@ const App = () => {
     setAverage(newAverage);
     setPositive(newPositive);
   }
-  
 
-  
+
+
 
   return (
     <div>
@@ -78,10 +87,7 @@ const App = () => {
       <Button handleClick={handleNeutral} text='neutral' />
       <Button handleClick={handleBad} text='bad' />
       <h1>Statistics</h1>
-      <Opinions text='good' quantity={good} />
-      <Opinions text='neutral' quantity={neutral} />
-      <Opinions text='bad' quantity={bad} />
-      <Statistics total={total} average={average} positive={positive}/>
+      <Statistics good={good} neutral={neutral} bad={bad} total={total} average={average} positive={positive} />
     </div>
   )
 }
