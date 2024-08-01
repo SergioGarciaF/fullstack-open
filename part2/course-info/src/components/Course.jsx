@@ -27,7 +27,7 @@ const Total = ({parts}) => {
   return(
     <p>The course has {totalExercises} exercises.</p>
   )
-}
+} 
 
 
 const Course = ({ course }) => {
