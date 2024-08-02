@@ -16,6 +16,8 @@ const App = () => {
     })
   }, [])
 
+
+
   const addName = (e) => {
     e.preventDefault();
     const nameExists = persons.some(person => person.name === newName);
@@ -26,8 +28,9 @@ const App = () => {
         name: newName,
         number: newNumber
       };
-      setPersons(persons.concat(personObject));
-      setNewName('');
+      axios.post('http://localhost:3001/persons', personObject).then(setPersons(persons.concat(personObject))
+      )
+      setNewName('')
       setNewNumber('')
     }
   }
