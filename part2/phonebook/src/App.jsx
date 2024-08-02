@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import agendaService from './services/Persons'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import Agenda from './components/Agenda'
@@ -11,12 +11,10 @@ const App = () => {
   const [newSearch, setNewSearch] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(response => {
-      setPersons(response.data)
-    })
+    agendaService
+    .getData()
+    .then(response => setPersons(response))
   }, [])
-
-
 
   const addName = (e) => {
     e.preventDefault();
@@ -28,8 +26,9 @@ const App = () => {
         name: newName,
         number: newNumber
       };
-      axios.post('http://localhost:3001/persons', personObject).then(setPersons(persons.concat(personObject))
-      )
+      agendaService
+      .create(personObject)
+      .then(response => setPersons(persons.concat(response)))
       setNewName('')
       setNewNumber('')
     }
