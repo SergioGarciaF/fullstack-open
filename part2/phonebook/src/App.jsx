@@ -18,9 +18,22 @@ const App = () => {
 
   const addName = (e) => {
     e.preventDefault();
-    const nameExists = persons.some(person => person.name === newName);
-    if (nameExists) {
-      alert(`${newName} is already added to phonebook`);
+    const existingPerson = persons.find(person => person.name === newName);
+    if (existingPerson) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const updateNumber = window.prompt('Enter the new number', existingPerson.number);
+        if (updateNumber) {
+          const updatedPerson = { ...existingPerson, number: updateNumber };
+          agendaService
+            .update(existingPerson.id, updatedPerson)
+            .then(response => {
+              setPersons(persons.map(person => person.id !== existingPerson.id ? person : response));
+            })
+            .catch(error => {
+              alert(`Failed to update ${existingPerson.name}. Error: ${error}`);
+            });
+        }
+      }
     } else {
       const personObject = {
         name: newName,
@@ -47,7 +60,11 @@ const App = () => {
   };
 
   const handleDeletePerson = (id) => {
-    setPersons(persons.filter(person => person.id !== id));
+    agendaService
+      .deleteData(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id));
+      })
   };
 
   const filteredPersons = persons.filter(person =>
