@@ -1,13 +1,19 @@
-import Person from "./Person"
+import Person from "./Person";
 
-const Agenda = ({persons}) => {
+const Agenda = ({ persons, onDelete }) => {
   return (
     <div>
-        {persons.map((person, index) => (
-          <Person key={index} name={person.name} number={person.number} />
-        ))}
-      </div>
-  )
-}
+      {persons.map((person) => (
+        <Person 
+          key={person.id} 
+          id={person.id} 
+          name={person.name} 
+          number={person.number} 
+          onDelete={onDelete}
+        />
+      ))}
+    </div>
+  );
+};
 
-export default Agenda
+export default Agenda;

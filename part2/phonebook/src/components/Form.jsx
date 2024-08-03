@@ -7,7 +7,7 @@ const Form = ({onSubmit, name, onChangeName, number, onChangeNumber}) => {
                 name: <input value={name} onChange={onChangeName} />
             </div>
             <div>
-                number: <input type='number' value={number} onChange={onChangeNumber} />
+                number: <input value={number} onChange={onChangeNumber} />
             </div>
             <div>
                 <button type="submit">add</button>
