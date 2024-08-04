@@ -3,12 +3,14 @@ import agendaService from './services/Persons';
 import Filter from './components/Filter';
 import Form from './components/Form';
 import Agenda from './components/Agenda';
+import Notification from './components/Notification';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [newSearch, setNewSearch] = useState('');
+  const [addMessage, setAddMessage] = useState(null)
 
   useEffect(() => {
     agendaService
@@ -28,6 +30,10 @@ const App = () => {
             .update(existingPerson.id, updatedPerson)
             .then(response => {
               setPersons(persons.map(person => person.id !== existingPerson.id ? person : response));
+              setAddMessage(`Number of ${newName} changed`)
+              setTimeout(() => {
+                setAddMessage(null)
+              }, 5000);
             })
             .catch(error => {
               alert(`Failed to update ${existingPerson.name}. Error: ${error}`);
@@ -41,7 +47,12 @@ const App = () => {
       };
       agendaService
         .create(personObject)
-        .then(response => setPersons(persons.concat(response)));
+        .then(response => setPersons(persons.concat(response)),
+          setAddMessage(`Added ${newName}`),
+          setTimeout(() => {
+            setAddMessage(null)
+          }, 5000)
+        );
       setNewName('');
       setNewNumber('');
     }
@@ -74,17 +85,18 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={addMessage} />
       <Filter value={newSearch} onChange={handleSearch} />
       <h2>Add a new</h2>
-      <Form 
-        onSubmit={addName} 
-        name={newName} 
-        onChangeName={handleNewName} 
-        number={newNumber} 
-        onChangeNumber={handleNewNumber} 
+      <Form
+        onSubmit={addName}
+        name={newName}
+        onChangeName={handleNewName}
+        number={newNumber}
+        onChangeNumber={handleNewNumber}
       />
       <h2>Numbers</h2>
-      <Agenda persons={filteredPersons} onDelete={handleDeletePerson}/>
+      <Agenda persons={filteredPersons} onDelete={handleDeletePerson} />
     </div>
   );
 };
