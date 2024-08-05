@@ -24,11 +24,11 @@ const persons = [
     }
 ]
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/agenda/persons', (request, response) => {
     response.json(persons)
 })
 
-app.get('/api/info', (request, response) => {
+app.get('/api/agenda/info', (request, response) => {
     const length = persons.length;
     const date = new Date();
     const htmlResponse = `
@@ -37,6 +37,17 @@ app.get('/api/info', (request, response) => {
     `;
     response.send(htmlResponse).end();
 });
+
+app.get('/api/agenda/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const person = persons.find(person => person.id === id);
+
+    if(person){
+        response.send(`<div><p>${person.name}</p><p>${person.number}</p></div>`)
+    } else {
+        response.status(400).send('<p>Server status 400 bad request, try with other id.</p>').end()
+    }
+})
 
 const PORT = 3001
 app.listen(PORT)
