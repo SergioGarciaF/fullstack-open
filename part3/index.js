@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 
-const persons = [
+let persons = [
     { 
       "id": 1,
       "name": "Arto Hellas", 
@@ -48,6 +48,22 @@ app.get('/api/agenda/persons/:id', (request, response) => {
         response.status(400).send('<p>Server status 400 bad request, try with other id.</p>').end()
     }
 })
+
+app.delete('/api/agenda/persons/:id', (request, response) => {
+    const id = Number(request.params.id);
+    
+    const personIndex = persons.findIndex(person => person.id === id);
+    
+    if (personIndex !== -1) {
+        persons = persons.filter(person => person.id !== id);
+        console.log(`Person with id: ${id} deleted succesfully.`);
+        response.status(204).end();
+    } else {
+        console.log(`Person with id: ${id} not found.`);
+        response.status(404).json({ error: 'Person not found' });
+    }
+});
+
 
 const PORT = 3001
 app.listen(PORT)
