@@ -1,7 +1,10 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
+
 app.use(express.json())
+app.use(morgan('tiny'))
 
 let persons = [
     { 
@@ -30,6 +33,7 @@ app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
 
+
 app.get('/api/info', (request, response) => {
     const length = persons.length;
     const date = new Date();
@@ -50,6 +54,8 @@ app.get('/api/persons/:id', (request, response) => {
         response.status(400).send('<p>Server status 400 bad request, try with other id.</p>').end()
     }
 })
+
+
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id);
