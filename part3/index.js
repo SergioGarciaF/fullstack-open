@@ -1,12 +1,11 @@
-const express = require('express')
-const morgan = require('morgan')
-const cors = require('cors')
-const app = express()
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+const app = express();
 
-
-app.use(cors())
-app.use(express.json())
-app.use(morgan('tiny'))
+app.use(cors());
+app.use(express.json());
+app.use(morgan('tiny'));
 
 let persons = [
     { 
@@ -29,12 +28,11 @@ let persons = [
       "name": "Mary Poppendieck", 
       "number": "39-23-6423122"
     }
-]
+];
 
-app.get('/api/persons', (request, response) => {
-    response.json(persons)
-})
-
+app.get('/', (request, response) => {
+    response.json(persons);
+});
 
 app.get('/api/info', (request, response) => {
     const length = persons.length;
@@ -43,21 +41,19 @@ app.get('/api/info', (request, response) => {
         <p>Phonebook has info of ${length} persons.</p>
         <p>${date}</p>
     `;
-    response.send(htmlResponse).end();
+    response.send(htmlResponse);
 });
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
+    const id = Number(request.params.id);
     const person = persons.find(person => person.id === id);
- 
-    if(person){
-        response.send(`<div><p>${person.name}</p><p>${person.number}</p></div>`)
+    
+    if (person) {
+        response.send(`<div><p>${person.name}</p><p>${person.number}</p></div>`);
     } else {
-        response.status(400).send('<p>Server status 400 bad request, try with other id.</p>').end()
+        response.status(404).send('<p>Person not found</p>');
     }
-})
-
-
+});
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id);
@@ -86,17 +82,16 @@ app.post('/api/persons', (request, response) => {
         });
     }
 
-    if(searchName){
+    if (searchName) {
         return response.status(400).json({ 
             error: 'name already exists.' 
         });
     }
     
-
     const person = {
         name: body.name,
         number: body.number,
-        id: generateId(body.id)
+        id: generateId()
     };
 
     persons = persons.concat(person);
@@ -104,6 +99,8 @@ app.post('/api/persons', (request, response) => {
     response.json(person);
 });
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+const PORT = process.env.PORT || 3001;
+console.log(`PORT: ${PORT}`);  
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
