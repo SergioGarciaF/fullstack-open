@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
+const Person = require('./models/person')
 
 app.use(express.static('dist'))
 app.use(cors());
@@ -9,30 +10,30 @@ app.use(express.json());
 app.use(morgan('tiny'));
 
 let persons = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
+    {
+        "id": 1,
+        "name": "Arto Hellas",
+        "number": "040-123456"
     },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
+    {
+        "id": 2,
+        "name": "Ada Lovelace",
+        "number": "39-44-5323523"
     },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
+    {
+        "id": 3,
+        "name": "Dan Abramov",
+        "number": "12-43-234345"
     },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
+    {
+        "id": 4,
+        "name": "Mary Poppendieck",
+        "number": "39-23-6423122"
     }
 ];
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons);
+    Person.find({}).then(data => response.json(data))
 });
 
 app.get('/api/info', (request, response) => {
@@ -48,7 +49,7 @@ app.get('/api/info', (request, response) => {
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id);
     const person = persons.find(person => person.id === id);
-    
+
     if (person) {
         response.send(`<div><p>${person.name}</p><p>${person.number}</p></div>`);
     } else {
@@ -58,9 +59,9 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id);
-    
+
     const personIndex = persons.findIndex(person => person.id === id);
-    
+
     if (personIndex !== -1) {
         persons = persons.filter(person => person.id !== id);
         response.status(204).end();
@@ -78,17 +79,17 @@ app.post('/api/persons', (request, response) => {
     const searchName = persons.find(person => person.name === body.name);
 
     if (!body.name || !body.number) {
-        return response.status(400).json({ 
-            error: 'name or number is missing' 
+        return response.status(400).json({
+            error: 'name or number is missing'
         });
     }
 
     if (searchName) {
-        return response.status(400).json({ 
-            error: 'name already exists.' 
+        return response.status(400).json({
+            error: 'name already exists.'
         });
     }
-    
+
     const person = {
         name: body.name,
         number: body.number,
@@ -101,7 +102,7 @@ app.post('/api/persons', (request, response) => {
 });
 
 const PORT = process.env.PORT || 3001;
-console.log(`PORT: ${PORT}`);  
+console.log(`PORT: ${PORT}`);
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
