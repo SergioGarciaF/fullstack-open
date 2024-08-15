@@ -9,8 +9,22 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny'));
 
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message });
+    }
+
+    next(error)
+}
+
+
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(data => response.json(data))
+
 });
 
 app.get('/api/info', (request, response) => {
@@ -23,38 +37,39 @@ app.get('/api/info', (request, response) => {
     response.send(htmlResponse);
 });
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id;
-    const person = persons.find(person => person.id === id);
-
-    if (person) {
-        response.send(`<div><p>${person.name}</p><p>${person.number}</p></div>`);
-    } else {
-        response.status(404).send('<p>Person not found</p>');
-    }
+app.get('/api/persons/:id', (request, response, next) => {
+    Person.findById(request.params.id)
+        .then(person => {
+            if (person) {
+                response.json(person)
+            } else {
+                response.status(404).end()
+            }
+        })
+        .catch(error => next(error))
 });
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body;
-  
+
     if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'name or number is missing'
         });
     }
-  
+
     const person = new Person({
         name: body.name,
         number: body.number
     });
 
-    
     person.save()
         .then(savedPerson => response.json(savedPerson))
-        
+        .catch(error => next(error))
+
 });
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     const id = request.params.id;
 
     Person.findByIdAndDelete(id)
@@ -65,10 +80,10 @@ app.delete('/api/persons/:id', (request, response) => {
                 response.status(404).json({ error: 'Person not found' });
             }
         })
-        .catch(error => response.status(500).json({ error: 'Internal server error' }));
+        .catch(error => next(error));
 });
 
-
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001;
 console.log(`PORT: ${PORT}`);
