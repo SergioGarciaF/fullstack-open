@@ -24,7 +24,7 @@ app.get('/api/info', (request, response) => {
 });
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id);
+    const id = request.params.id;
     const person = persons.find(person => person.id === id);
 
     if (person) {
@@ -33,23 +33,6 @@ app.get('/api/persons/:id', (request, response) => {
         response.status(404).send('<p>Person not found</p>');
     }
 });
-
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id);
-
-    const personIndex = persons.findIndex(person => person.id === id);
-
-    if (personIndex !== -1) {
-        persons = persons.filter(person => person.id !== id);
-        response.status(204).end();
-    } else {
-        response.status(404).json({ error: 'Person not found' });
-    }
-});
-
-const generateId = () => {
-    return Math.floor(Math.random() * 1000000000);
-};
 
 app.post('/api/persons', (request, response) => {
     const body = request.body;
@@ -70,6 +53,21 @@ app.post('/api/persons', (request, response) => {
         .then(savedPerson => response.json(savedPerson))
         
 });
+
+app.delete('/api/persons/:id', (request, response) => {
+    const id = request.params.id;
+
+    Person.findByIdAndDelete(id)
+        .then(deletedPerson => {
+            if (deletedPerson) {
+                response.status(204).end();
+            } else {
+                response.status(404).json({ error: 'Person not found' });
+            }
+        })
+        .catch(error => response.status(500).json({ error: 'Internal server error' }));
+});
+
 
 
 const PORT = process.env.PORT || 3001;
