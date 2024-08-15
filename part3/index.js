@@ -85,8 +85,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 3001;
-console.log(`PORT: ${PORT}`);
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const port = process.env.PORT || 3001; // Recupera el puerto desde una variable de entorno o usa 3001 por defecto
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server listening on port ${port}`);
 });

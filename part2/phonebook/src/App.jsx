@@ -61,14 +61,16 @@ const App = () => {
       agendaService
         .create(personObject)
         .then(response => {
-          setPersons(persons.concat(response));
-          setConn(true);
-          setAddMessage(`Added ${newName}`);
-          setTimeout(() => {
-            setAddMessage(null);
-          }, 5000);
-          setNewName('');
-          setNewNumber('');
+          {
+            setPersons(persons.concat(response));
+            setConn(true);
+            setAddMessage(`Added ${personObject.name}`);
+            setTimeout(() => {
+              setAddMessage(null);
+            }, 5000);
+            setNewName('');
+            setNewNumber('');
+          }
         })
         .catch(error => {
           setConn(false)
