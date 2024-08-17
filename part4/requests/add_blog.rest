@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Amazon",
+    "author": "Jeff Bezos",
+    "url": "amazon.com",
+    "likes": "321"
+}
